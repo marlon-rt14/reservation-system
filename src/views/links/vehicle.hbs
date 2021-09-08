@@ -1,0 +1,75 @@
+<div class="container-xxl p-4 col-md-6 container-data ">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <form action="{{url}}/{{c_id}}" method="POST" id="form">
+            <div class="form-group mb-3">
+              <label class="form-label">ID:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_vehicle"
+                readonly
+								id="idForm"
+                value="{{general.current.c_id}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Descripción:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="description"
+                placeholder="Descripción"
+                autofocus
+                required=" "
+                value="{{general.current.c_description}}"
+              />
+            </div>
+            <div class="form-group d-flex gap-3 flex-row-reverse form-buttons">
+              <button
+                class="btn btn-success w-100"
+                id="btn-save"
+              >Guardar</button>
+              <button class="btn btn-warning w-100">Limpiar</button>
+              <button
+                class="btn btn-danger w-100"
+                id="btn-delete"
+              >Eliminar</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6 card-container">
+      <div class="card-body container-items">
+        {{#with general}}
+          {{#each vehicles}}
+            <a
+              href="/links/vehicle/find/{{id_vehicle}}"
+              class="d-flex mb-4 text-dark"
+            >
+              <div class="container d-flex flex-container-data">
+                <div class="item-container">
+                  <label>ID:</label>
+                  <div class="grid-item-value id_vehicle">{{id_vehicle}}</div>
+                </div>
+                <div class="item-container">
+                  <label>Descripción:</label>
+                  <div class="grid-item-value description">{{description}}</div>
+                </div>
+              </div>
+            </a>
+
+          {{/each}}
+        {{/with}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/vehicle.js"></script>
+<script src="/js/general.js"></script>

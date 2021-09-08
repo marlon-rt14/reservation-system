@@ -1,0 +1,22 @@
+
+    <div class="d-flex f-direction-row p-4 justify-content-evenly logger-head">
+      <li scope="col" class="d-inline-block li-logger-head text-center"><b>Hora del evento</b></li>
+      <li scope="col" class="d-inline-block li-logger-head text-center"><b>Usuario Host</b></li>
+			<li scope="col" class="d-inline-block li-logger-head text-center"><b>Hilo ID</b></li>
+      <li scope="col" class="d-inline-block li-logger-head text-center"><b>Servidor ID</b></li>
+			<li scope="col" class="d-inline-block li-logger-head text-center"><b>Tipo de comando</b></li>
+			<li scope="col" class="d-inline-block li-logger-head text-center"><b>Argumento</b></li>
+    </tr>
+  </div>
+		{{#each summary}}
+		<div class="border  d-flex f-direction-row p-4 justify-content-evenly logger-item-container">
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{toShortDate event_time}}</li>
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{user_host}}</li>
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{thread_id}}</li>
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{server_id}}</li>
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{command_type}}</li>
+			<li class="d-inline-block mb-3 li-logger-item text-center">{{argument}}</li>
+		</div>
+		{{/each}}
+
+		<script src="/js/general.js"></script>

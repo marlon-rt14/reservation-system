@@ -1,0 +1,134 @@
+<div class="container-xxl p-4 col-md-11 container-data ">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <form action="{{url}}/{{c_id}}" method="POST" id="form">
+            <div class="form-group mb-3">
+              <label class="form-label">ID:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_employee"
+                readonly
+								id="idForm"
+                value="{{general.current.c_id}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Nombre:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="fname"
+                placeholder="Nombre"
+                autofocus
+                required=" "
+                value="{{general.current.c_fname}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Apellido:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="lname"
+                placeholder="Apellido"
+                required=" "
+                value="{{general.current.c_lname}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Salario:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="salary"
+                placeholder="Salario"
+                required=" "
+                value="{{general.current.c_salary}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">OFICINA:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_office"
+                placeholder="Salario"
+                value="{{general.current.c_idOffice}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Fecha:</label>
+              <input
+                type="date"
+                class="form-control"
+                name="date"
+                placeholder="Fecha"
+                required=" "
+                value="{{general.current.c_date}}"
+              />
+            </div>
+            <div class="d-flex gap-3 flex-row-reverse form-buttons">
+              <button
+                class="btn btn-success w-100"
+                id="btn-save"
+              >Guardar</button>
+              <button class="btn btn-warning w-100">Limpiar</button>
+              <button
+                class="btn btn-danger w-100"
+                id="btn-delete"
+              >Eliminar</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-8 card-container ">
+      <div class="card-body container-items">
+        {{#with general}}
+          {{#each employees}}
+            <a
+              href="/links/employee/find/{{id_employee}}"
+              class="d-flex mb-4 text-dark"
+            >
+              <div class="container d-flex flex-container-data">
+                <div class="item-container">
+                  <label><b>ID:</b></label>
+                  <div class="grid-item-value id">{{id_employee}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>Nombre:</b></label>
+                  <div class="grid-item-value name">{{fname}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>Apellido:</b></label>
+                  <div class="grid-item-value lname">{{lname}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>Salario:</b></label>
+                  <div class="grid-item-value salary">{{salary}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>OFICINA:</b></label>
+                  <div class="grid-item-value province">{{id_office}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>Fecha:</b></label>
+                  <div class="grid-item-value date">{{toDate date}}</div>
+                </div>
+              </div>
+            </a>
+
+          {{/each}}
+        {{/with}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/employee.js"></script>
+<script src="/js/general.js"></script>

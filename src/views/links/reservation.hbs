@@ -1,0 +1,134 @@
+<div class="container-xxl p-4 col-md-11 container-data ">
+  <div class="row">
+    <div class="col-md-5">
+      <div class="card">
+        <div class="card-body">
+          <form action="{{url}}/{{c_id}}" method="POST" id="form">
+            <div class="form-group mb-3">
+              <label class="form-label">ID:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_reservation"
+                readonly
+                id="idForm"
+                value="{{general.current.c_id}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">VEHICULO:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_vehicle"
+                placeholder="Vechiculo"
+                autofocus
+                value="{{general.current.c_idVehicle}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Fecha:</label>
+              <input
+                type="date"
+                class="form-control"
+                name="date"
+                placeholder="Fecha"
+                required=" "
+                value="{{general.current.c_date}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Destino:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="destination"
+                placeholder="Destino"
+                required=" "
+                value="{{general.current.c_destination}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Kilómetros:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="kilometres"
+                placeholder="Kilómetros"
+                required=" "
+                value="{{general.current.c_kilometres}}"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">EMPLEADO:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="id_employee"
+                placeholder="Empleado"
+                value="{{general.current.c_idEmpleado}}"
+              />
+            </div>
+            <div class="form-group d-flex gap-3 flex-row-reverse form-buttons">
+              <button
+                class="btn btn-success w-100"
+                id="btn-save"
+              >Guardar</button>
+              <button class="btn btn-warning w-100">Limpiar</button>
+              <button
+                class="btn btn-danger w-100"
+                id="btn-delete"
+              >Eliminar</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-7 card-container">
+      <div class="card-body container-items">
+        {{#with general}}
+          {{#each reservations}}
+            <a
+              href="/links/reservation/find/{{id_reservation}}"
+              class="d-flex mb-4 text-dark"
+            >
+              <div class="container d-flex flex-container-data">
+                <div class="item-container">
+                  <label>ID:</label>
+                  <div
+                    class="grid-item-value id_employee"
+                  >{{id_reservation}}</div>
+                </div>
+                <div class="item-container">
+                  <label>VEHICULO:</label>
+                  <div class="grid-item-value id_vehicle">{{id_vehicle}}</div>
+                </div>
+                <div class="item-container">
+                  <label>Fecha:</label>
+                  <div class="grid-item-value date">{{toDate date}}</div>
+                </div>
+                <div class="item-container">
+                  <label>Destino:</label>
+                  <div class="grid-item-value destination">{{destination}}</div>
+                </div>
+                <div class="item-container">
+                  <label>Kilómetros:</label>
+                  <div class="grid-item-value kilometres">{{kilometres}}</div>
+                </div>
+                <div class="item-container">
+                  <label>EMPLEADO:</label>
+                  <div class="grid-item-value id_employee">{{id_employee}}</div>
+                </div>
+              </div>
+            </a>
+          {{/each}}
+        {{/with}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/reservation.js"></script>
+<script src="/js/general.js"></script>

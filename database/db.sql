@@ -45,12 +45,20 @@ ALTER TABLE reservation
 ALTER TABLE reservation 
 	ADD FOREIGN KEY (id_employee) REFERENCES employee(id_employee);
 
-{
-	-- CREATE PROCEDURE higherSalary @salary FLOAT(8,2)
-	-- AS
-	-- 	SELECT * FROM employee WHERE salary >= @salary
-	-- GO;
-}
+-- FILL TABLES
+
+INSERT INTO office VALUES
+(1, 'Avenida Atahualpa', 'Quito', 'Pichincha');
+
+INSERT INTO employee VALUES
+(1, 'Pedro', 'Lopez', '550.28', '1', '2021-09-01'),
+(2, 'Marta', 'Morales', '950.28', '1', '2021-09-03'),
+(3, 'Alejandro', 'Alvarez', '225.78', '1', '2021-08-15');
+
+INSERT INTO employee VALUES
+(4, 'Roberto', 'Fernandez', '775.22', '1', '2021-07-18');
+
+-- FILL INCOMPLETE FIELDS
 
 ALTER TABLE office
 	ADD name VARCHAR(50) NOT NULL AFTER id_office;
@@ -70,20 +78,8 @@ ALTER TABLE vehicle
 UPDATE vehicle SET placa = 'PTQ500'
 	WHERE id_vehicle = 1;
 
--- FILL TABLES
-
-INSERT INTO office VALUES
-(1, 'Avenida Atahualpa', 'Quito', 'Pichincha');
-
-INSERT INTO employee VALUES
-(1, 'Pedro', 'Lopez', '550.28', '1', '2021-09-01'),
-(2, 'Marta', 'Morales', '950.28', '1', '2021-09-03'),
-(3, 'Alejandro', 'Alvarez', '225.78', '1', '2021-08-15');
-
-INSERT INTO employee VALUES
-(4, 'Roberto', 'Fernandez', '775.22', '1', '2021-07-18');
-
 -- SOTORED PROCEDURES
+-- Get the maximum salary
 
 DELIMITER //
 CREATE PROCEDURE getMaxSalary (OUT maxSalary FLOAT(8,2))
@@ -92,7 +88,7 @@ BEGIN
 END;
 //
 
-
+-- Get the minimum salary
 DELIMITER //
 CREATE PROCEDURE getMinSalary (OUT minSalary FLOAT(8,2))
 BEGIN
@@ -101,6 +97,7 @@ END;
 //
 
 -- TRIGGERS
+-- For every new employee his salary will added replacing salary field on table "summarySalary"
 
 DELIMITER //
 CREATE TRIGGER beforeEmployeeInsert

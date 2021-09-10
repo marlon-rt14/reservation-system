@@ -1,4 +1,4 @@
-<div class="container-xxl p-4 col-md-6 container-data ">
+<div class="container-xxl p-4 col-md-7 container-data ">
   <div class="row">
     <div class="col-md-6">
       <div class="card">
@@ -16,13 +16,24 @@
               />
             </div>
             <div class="form-group mb-3">
+              <label class="form-label">Placa:</label>
+              <input
+                type="text"
+                class="form-control"
+                name="placa"
+                placeholder="Placa del vehículo"
+                autofocus
+                required=" "
+                value="{{general.current.c_placa}}"
+              />
+            </div>
+            <div class="form-group mb-3">
               <label class="form-label">Descripción:</label>
               <input
                 type="text"
                 class="form-control"
                 name="description"
                 placeholder="Descripción"
-                autofocus
                 required=" "
                 value="{{general.current.c_description}}"
               />
@@ -54,16 +65,19 @@
             >
               <div class="container d-flex flex-container-data">
                 <div class="item-container">
-                  <label>ID:</label>
+                  <label><b>ID:</b></label>
                   <div class="grid-item-value id_vehicle">{{id_vehicle}}</div>
                 </div>
                 <div class="item-container">
-                  <label>Descripción:</label>
+                  <label><b>Placa:</b></label>
+                  <div class="grid-item-value description">{{placa}}</div>
+                </div>
+                 <div class="item-container">
+                  <label><b>Descripción:</b></label>
                   <div class="grid-item-value description">{{description}}</div>
                 </div>
               </div>
             </a>
-
           {{/each}}
         {{/with}}
       </div>

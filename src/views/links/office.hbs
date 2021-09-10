@@ -1,4 +1,4 @@
-<div class="container p-4 container-data ">
+<div class="container p-4 container-data">
   <div class="row">
     <div class="col-md-5">
       <div class="card">
@@ -19,13 +19,24 @@
                   />
                 </div>
                 <div class="form-group mb-3">
+                  <label class="form-label">Nombre:</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="name"
+                    placeholder="Nombre de la oficina"
+                    autofocus
+                    required=" "
+                    value="{{c_name}}"
+                  />
+                </div>
+                <div class="form-group mb-3">
                   <label class="form-label">Dirección:</label>
                   <input
                     type="text"
                     class="form-control"
                     name="address"
                     placeholder="Dirección de la oficina"
-                    autofocus
                     required=" "
                     value="{{c_address}}"
                   />
@@ -55,9 +66,15 @@
                 <div
                   class="form-group d-flex gap-3 flex-row-reverse form-buttons"
                 >
-                  <button class="btn btn-success w-100" id="btn-save">Guardar</button>
-                  <button class="btn btn-warning w-100" >Limpiar</button>
-                  <button class="btn btn-danger w-100" id="btn-delete">Eliminar</button>
+                  <button
+                    class="btn btn-success w-100"
+                    id="btn-save"
+                  >Guardar</button>
+                  <button class="btn btn-warning w-100">Limpiar</button>
+                  <button
+                    class="btn btn-danger w-100"
+                    id="btn-delete"
+                  >Eliminar</button>
                 </div>
               </form>
             {{/with}}
@@ -82,6 +99,10 @@
                     class="grid-item-value id"
                     id="idItem"
                   >{{id_office}}</div>
+                </div>
+                <div class="item-container">
+                  <label><b>Nombre:</b></label>
+                  <div class="grid-item-value address">{{name}}</div>
                 </div>
                 <div class="item-container">
                   <label><b>Dirección:</b></label>

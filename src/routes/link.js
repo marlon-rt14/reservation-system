@@ -10,18 +10,19 @@ router.get("/office", async (req, res) => {
   if (finded !== null) {
     current = {
       c_id: finded[0].id_office,
+      c_name: finded[0].name,
       c_address: finded[0].address,
       c_town: finded[0].town,
-			c_province: finded[0].province,
-			url: '/links/office/delete'
+      c_province: finded[0].province,
+      url: "/links/office/delete",
     };
   } else {
     current = {
       c_id: "",
       c_address: "",
       c_town: "",
-			c_province: "",
-			url: '/links/office'
+      c_province: "",
+      url: "/links/office",
     };
   }
 
@@ -34,6 +35,8 @@ router.get("/office", async (req, res) => {
   res.render("links/office", { general });
 });
 
+/////////////////////////////////////
+
 router.get("/employee", async (req, res) => {
   let current = null;
   if (finded != null) {
@@ -42,22 +45,53 @@ router.get("/employee", async (req, res) => {
       c_fname: finded[0].fname,
       c_lname: finded[0].lname,
       c_salary: finded[0].salary,
-      c_idOffice: finded[0].id_office,
-			c_date: finded[0].date,
-			url: '/links/employee/delete'
+      c_idOffice: null,
+      c_date: finded[0].date,
+      url: "/links/employee/delete",
     };
-	} else {
-		current = {
-			url: '/links/employee'
-		};
-	};
+    if (finded[0].id_office !== null) {
+      const office = await pool.query(
+        "SELECT * FROM office WHERE id_office = ?",
+        [parseInt(finded[0].id_office)]
+      );
+      current.c_idOffice = office[0].id_office;
+    }
+  } else {
+    current = {
+      url: "/links/employee",
+    };
+  }
 
-  const employees = await pool.query("SELECT * FROM employee");
+  const allEmployees = await pool.query("SELECT * FROM employee");
+  let employees = [];
+
+  allEmployees.forEach(async (element) => {
+    const office = await pool.query(
+      "SELECT * FROM office WHERE id_office = ?",
+      [element.id_office]
+    );
+
+    if (office.length > 0) {
+      employees.push({
+        id_employee: element.id_employee,
+        fname: element.fname,
+        lname: element.lname,
+        salary: element.salary,
+        id_office: office[0].name,
+        date: element.date,
+      });
+    } else {
+      employees.push(element);
+    }
+  });
+
+  const offices = await pool.query("SELECT * FROM office");
   const general = {
     employees,
     current,
+    offices,
   };
-
+  // console.log(office);
   res.render("links/employee", { general });
 });
 
@@ -66,23 +100,55 @@ router.get("/reservation", async (req, res) => {
   if (finded != null) {
     current = {
       c_id: finded[0].id_reservation,
-      c_idVehicle: finded[0].id_vehicle,
+      c_idVehicle: null,
       c_date: finded[0].date,
       c_destination: finded[0].destination,
       c_kilometres: finded[0].kilometres,
-			c_idEmployee: finded[0].employee,
-			url: '/links/reservation/delete'
+      c_idEmployee: null,
+      url: "/links/reservation/delete",
     };
-	} else {
-		current = {
-			url: '/links/reservation'
-		};
-	};
+    if (finded[0].id_vehicle !== null) {
+      const vehicle = await pool.query(
+        "SELECT * FROM vehicle WHERE id_vehicle = ?",
+        [parseInt(finded[0].id_vehicle)]
+      );
+      current.c_idVehicle = vehicle[0].id_vehicle;
+    }
+    if (finded[0].id_employee !== null) {
+      const employee = await pool.query(
+        "SELECT * FROM employee WHERE id_employee = ?",
+        [parseInt(finded[0].id_employee)]
+      );
+      current.c_idEmployee = employee[0].id_employee;
+    }
+  } else {
+    current = {
+      url: "/links/reservation",
+    };
+  }
 
-  const reservations = await pool.query("SELECT * FROM reservation");
+  const allReservations = await pool.query("SELECT * FROM reservation");
+  let reservations = [];
+
+  for (const reservation of allReservations) {
+    if (reservation.id_employee !== null) {
+      const employees = await pool.query("SELECT * FROM employee WHERE id_employee = ?", [reservation.id_employee]);
+      reservation.id_employee = employees[0].fname + " " + employees[0].lname;
+    }
+    if (reservation.id_vehicle !== null) {
+      const vehicles = await pool.query("SELECT * FROM vehicle WHERE id_vehicle = ?", [reservation.id_vehicle]);
+      reservation.id_vehicle = vehicles[0].placa;
+    }
+    reservations.push(reservation);
+ }
+
+  const vehicles = await pool.query("SELECT * FROM vehicle");
+  const employees = await pool.query("SELECT * FROM employee");
   const general = {
     reservations,
     current,
+    vehicles,
+    employees,
   };
   res.render("links/reservation", { general });
 });
@@ -92,14 +158,14 @@ router.get("/vehicle", async (req, res) => {
   if (finded != null) {
     current = {
       c_id: finded[0].id_vehicle,
-			c_description: finded[0].description,
-			url: '/links/vehicle/delete'
+      c_description: finded[0].description,
+      url: "/links/vehicle/delete",
     };
-	} else {
-		current = {
-			url: '/links/vehicle'
-		}
-	};
+  } else {
+    current = {
+      url: "/links/vehicle",
+    };
+  }
 
   const vehicles = await pool.query("SELECT * FROM vehicle");
   const general = {
@@ -113,67 +179,105 @@ router.get("/vehicle", async (req, res) => {
 ///////////////////////////////////////////////////
 // GUARDAR
 router.post("/office", async (req, res) => {
-  const { id_office, address, location, province } = req.body;
-	const office = {
+  const { id_office, name, address, location, province } = req.body;
+  const office = {
+    name,
     address,
     town: location,
     province,
-	};
-	if (id_office === undefined || isNaN(parseInt(id_office))) {
-		await pool.query("INSERT INTO office SET ?", [office]);
-	} else {
-		await pool.query('UPDATE office SET ? WHERE id_office = ?', [office, parseInt(id_office)]);
-	}
-  
+  };
+  if (id_office === undefined || isNaN(parseInt(id_office))) {
+    await pool.query("INSERT INTO office SET ?", [office]);
+  } else {
+    await pool.query("UPDATE office SET ? WHERE id_office = ?", [
+      office,
+      parseInt(id_office),
+    ]);
+  }
+
   res.redirect("/links/office");
 });
 
 router.post("/employee", async (req, res) => {
-  const { id_employee, fname, lname, salary, id_office, date } = req.body;
+  const { id_employee, fname, lname, salary, officeId, date } = req.body;
+  const office = await pool.query("SELECT * FROM office WHERE id_office = ?", [
+    parseInt(officeId),
+  ]);
   const employee = {
     fname,
     lname,
     salary: parseFloat(salary),
-    id_office: null,
+    id_office: office[0].id_office,
     date,
   };
-	if (id_employee === undefined || isNaN(parseInt(id_employee))) {
-		await pool.query("INSERT INTO employee SET ?", [employee]);
-	} else {
-		await poo.query('UPDATE employee SET ? WHERE id_employee = ?', [employee, parseInt(id_employee)]);
-	}
-  
+  if (id_employee === undefined || isNaN(parseInt(id_employee))) {
+    await pool.query("INSERT INTO employee SET ?", [employee]);
+  } else {
+    await poo.query("UPDATE employee SET ? WHERE id_employee = ?", [
+      employee,
+      parseInt(id_employee),
+    ]);
+  }
+
+  // console.log(employee);
+
   res.redirect("/links/employee");
 });
 
 router.post("/reservation", async (req, res) => {
-  const { id_reservation, id_vehicle, date, destination, kilometres, id_employee } = req.body;
+  const {
+    id_reservation,
+    vehicleId,
+    date,
+    destination,
+    kilometres,
+    employeeId,
+  } = req.body;
+
+  const vehicle = await pool.query(
+    "SELECT * FROM vehicle WHERE id_vehicle = ?",
+    [parseInt(vehicleId)]
+  );
+  const employee = await pool.query(
+    "SELECT * FROM employee WHERE id_employee = ?",
+    [parseInt(employeeId)]
+  );
+
   const reservations = {
-    id_vehicle: null,
+    id_vehicle: vehicle[0].id_vehicle,
     date,
     destination,
     kilometres: parseInt(kilometres),
-    id_employee: null,
+    id_employee: employee[0].id_employee,
   };
-	if (id_reservation == undefined || isNaN(parseInt(id_reservation))) {
-		await pool.query("INSERT INTO reservation SET ?", [reservations]);
-	} else {
-		await pool.query('UPDATE reservation SET ? WHERE id_reservation = ?', [reservations, parseInt(id_reservation)]);
-	}
 
+  if (id_reservation == undefined || isNaN(parseInt(id_reservation))) {
+    await pool.query("INSERT INTO reservation SET ?", [reservations]);
+  } else {
+    await pool.query("UPDATE reservation SET ? WHERE id_reservation = ?", [
+      reservations,
+      parseInt(id_reservation),
+    ]);
+  }
+
+  console.log(reservations);
   res.redirect("/links/reservation");
 });
 
 router.post("/vehicle", async (req, res) => {
-  const { id_vehicle, description } = req.body;
+  const { id_vehicle, placa, description } = req.body;
   const vehicles = {
+    placa,
     description,
   };
-	if (id_vehicle == undefined || isNaN(parseInt(id_vehicle))) {
-		await pool.query("INSERT INTO vehicle SET ?", [vehicles]);
-	} else {
-		await pool.query('UPDATE vehicle SET ? WHERE id_vehicle = ?', [vehicles, id_vehicle]);
-	}
+  if (id_vehicle == undefined || isNaN(parseInt(id_vehicle))) {
+    await pool.query("INSERT INTO vehicle SET ?", [vehicles]);
+  } else {
+    await pool.query("UPDATE vehicle SET ? WHERE id_vehicle = ?", [
+      vehicles,
+      id_vehicle,
+    ]);
+  }
 
   res.redirect("/links/vehicle");
 });
@@ -203,7 +307,7 @@ router.get("/employee/find/:id", async (req, res) => {
 });
 
 router.get("/reservation/find/:id", async (req, res) => {
-	const { id } = req.params;
+  const { id } = req.params;
   const currentReservation = await pool.query(
     "SELECT * FROM reservation WHERE id_reservation = ?",
     [id]

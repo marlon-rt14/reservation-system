@@ -52,6 +52,24 @@ ALTER TABLE reservation
 	-- GO;
 }
 
+ALTER TABLE office
+	ADD name VARCHAR(50) NOT NULL AFTER id_office;
+
+UPDATE office SET name = 'Recursos humanos'
+	WHERE id_office = 1;
+
+UPDATE office SET name = 'Soporte de quipos'
+	WHERE id_office = 2;
+
+UPDATE office SET name = 'Oficina de soporte'
+	WHERE id_office = 11;
+
+ALTER TABLE vehicle
+	ADD placa VARCHAR(10) NOT NULL AFTER id_vehicle;
+
+UPDATE vehicle SET placa = 'PTQ500'
+	WHERE id_vehicle = 1;
+
 -- FILL TABLES
 
 INSERT INTO office VALUES

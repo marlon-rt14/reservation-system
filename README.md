@@ -23,6 +23,7 @@ _Las instrucciones de instalación pueden variar dependiendo del sistema operati
 - Abrir el gestor de base de datos y abrir una nueva consulta
 **Ejecutar**
 > set global general_log = 1;
+
 > set global log_output = 'table';
 
 **NOTA: Es importante limpiar este logger cada cierto tiempo porque consumirá espacio. Ejecutar**

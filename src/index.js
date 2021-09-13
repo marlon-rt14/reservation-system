@@ -36,6 +36,7 @@ app.use(require('./routes'));
 // app.use(require('./routes/employees'));
 app.use('/logger', require('./routes/logger'));
 app.use('/summary', require('./routes/summary'));
+app.use('/auditory', require('./routes/auditory'));
 app.use('/links', require('./routes/link'));
 
 //public 

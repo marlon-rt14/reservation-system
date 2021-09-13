@@ -186,15 +186,22 @@ router.post("/office", async (req, res) => {
     town: location,
     province,
   };
+  let newAuditory = {
+    description: ''
+  };
+
   if (id_office === undefined || isNaN(parseInt(id_office))) {
     await pool.query("INSERT INTO office SET ?", [office]);
+    newAuditory.description = `Se ha guardado la oficina ${name} en la dirección ${address}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   } else {
     await pool.query("UPDATE office SET ? WHERE id_office = ?", [
       office,
       parseInt(id_office),
     ]);
+    newAuditory.description = `Se ha actualizado la oficina ${name}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   }
-
   res.redirect("/links/office");
 });
 
@@ -210,13 +217,20 @@ router.post("/employee", async (req, res) => {
     id_office: office[0].id_office,
     date,
   };
+  let newAuditory = {
+    description: ''
+  };
   if (id_employee === undefined || isNaN(parseInt(id_employee))) {
     await pool.query("INSERT INTO employee SET ?", [employee]);
+    newAuditory.description = `Se ha guardado el empleado ${fname} ${lname}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   } else {
     await poo.query("UPDATE employee SET ? WHERE id_employee = ?", [
       employee,
       parseInt(id_employee),
     ]);
+    newAuditory.description = `Se ha actualizado el empleado con ID: ${id_employee}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   }
 
   // console.log(employee);
@@ -251,13 +265,21 @@ router.post("/reservation", async (req, res) => {
     id_employee: employee[0].id_employee,
   };
 
+  let newAuditory = {
+    description: ''
+  };
+
   if (id_reservation == undefined || isNaN(parseInt(id_reservation))) {
     await pool.query("INSERT INTO reservation SET ?", [reservations]);
+    newAuditory.description = `Se ha guardado una reservacion del empleado ${employee[0].fname} ${employee[0].lname} para el vehiculo con placa ${vehicle[0].placa}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   } else {
     await pool.query("UPDATE reservation SET ? WHERE id_reservation = ?", [
       reservations,
       parseInt(id_reservation),
     ]);
+    newAuditory.description = `Se ha actualizado la reservacion con ID: ${id_reservation}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   }
 
   console.log(reservations);
@@ -270,13 +292,22 @@ router.post("/vehicle", async (req, res) => {
     placa,
     description,
   };
+
+  let newAuditory = {
+    description: ''
+  };
+
   if (id_vehicle == undefined || isNaN(parseInt(id_vehicle))) {
     await pool.query("INSERT INTO vehicle SET ?", [vehicles]);
+    newAuditory.description = `Se ha guardado un nuevo vehiculo con placa: ${placa}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   } else {
     await pool.query("UPDATE vehicle SET ? WHERE id_vehicle = ?", [
       vehicles,
       id_vehicle,
     ]);
+    newAuditory.description = `Se ha actualizado el vehiculo con con ID: ${id_vehicle}`;
+    await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   }
 
   res.redirect("/links/vehicle");
@@ -355,7 +386,16 @@ router.get("/clean/vehicle", async (req, res) => {
 router.post("/office/delete/:id", async (req, res) => {
   const { id } = req.params;
   // const actual = await pool.query('SELECT * FROM office WHERE id_office = ?', [id]);
+  let newAuditory = {
+    description: ''
+  };
+
+  const officess = await pool.query('SELECT * FROM office WHERE id_office = ?', [id]);
+
+  newAuditory.description = `Se ha eliminado la oficina de ${offices[0].name}con ID: ${offices[0].id_office}`;
+  await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   await pool.query("DELETE FROM office WHERE id_office = ?", [id]);
+ 
   // console.log(actual);
   finded = null;
   res.redirect("/links/office");
@@ -363,7 +403,15 @@ router.post("/office/delete/:id", async (req, res) => {
 
 router.post("/employee/delete/:id", async (req, res) => {
   const { id } = req.params;
-  // const actual = await pool.query('SELECT * FROM office WHERE id_office = ?', [id]);
+
+  let newAuditory = {
+    description: ''
+  };
+
+  const employees = await pool.query('SELECT * FROM employee WHERE id_employee = ?', [id]);
+
+  newAuditory.description = `Se ha eliminado el empleado ${employees[0].name} ${employees[0].lname} con ID: ${employees[0].id_employee}`;
+  await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   await pool.query("DELETE FROM employee WHERE id_employee = ?", [id]);
   // console.log(actual);
   finded = null;
@@ -372,7 +420,19 @@ router.post("/employee/delete/:id", async (req, res) => {
 
 router.post("/reservation/delete/:id", async (req, res) => {
   const { id } = req.params;
-  // const actual = await pool.query('SELECT * FROM office WHERE id_office = ?', [id]);
+  let newAuditory = {
+    description: ''
+  };
+
+  const reservations = await pool.query('SELECT * FROM reservation WHERE id_reservation = ?', [id]);
+
+  const employees = await pool.query('SELECT * FROM employee WHERE id_employee = ?', [reservations[0].id_employee]);
+
+  const vehicles = await pool.query('SELECT * FROM vehicle WHERE id_vehicle = ?', [reservations[0].id_vehicle]);
+
+  newAuditory.description = `Se ha eliminado la reservacion de de ${employees[0].fname} ${employees[0].lname} para el vehiculo con placa ${vehicles[0].placa}`;
+  await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
+
   await pool.query("DELETE FROM reservation WHERE id_reservation = ?", [id]);
   // console.log(actual);
   finded = null;
@@ -381,7 +441,14 @@ router.post("/reservation/delete/:id", async (req, res) => {
 
 router.post("/vehicle/delete/:id", async (req, res) => {
   const { id } = req.params;
-  // const actual = await pool.query('SELECT * FROM office WHERE id_office = ?', [id]);
+  let newAuditory = {
+    description: ''
+  };
+
+  const vehicles = await pool.query('SELECT * FROM vehicle WHERE id_vehicle = ?', [id]);
+
+  newAuditory.description = `Se ha eliminado el vehiculo con placa ${vehicles[0].placa} con ID: ${vehicles[0].id_vehicle}`;
+  await pool.query('INSERT INTO auditoria SET ?', [newAuditory]);
   await pool.query("DELETE FROM vehicle WHERE id_vehicle = ?", [id]);
   // console.log(actual);
   finded = null;

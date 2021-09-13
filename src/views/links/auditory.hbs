@@ -1,0 +1,21 @@
+<div class="container p-3">
+  <div class="logger-head row">
+    <div class="col-1 text-center border p-2"><b>ID</b></div>
+    <div class="col-9 text-center border p-2"><b>Descripción</b></div>
+    <div class="col-2 text-center border p-2"><b>Fecha</b></div>
+  </div>
+
+  {{#each auditories}}
+    <div class="row">
+      <div
+        class="col-1 d-flex align-items-center justify-content-center border border-dark text-center border p-2"
+      >{{id_auditoria}}</div>
+      <div class="col-9 d-flex align-items-center border border-dark border-start-0 border-end-0 p-2">{{description}}</div>
+      <div class="col-2 d-flex align-items-center justify-content-center border border-dark text-center border p-2">{{toShortDate
+          created_at
+        }}</div>
+    </div>
+  {{/each}}
+</div>
+
+<script src="/js/general.js"></script>

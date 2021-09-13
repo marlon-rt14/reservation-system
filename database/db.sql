@@ -36,6 +36,12 @@ CREATE TABLE IF NOT EXISTS summarySalary(
 	totalSalary FLOAT(11)
 );
 
+CREATE TABLE IF NOT EXISTS auditoria (
+	id_auditoria INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	description VARCHAR(100) NOT NULL,
+	created_at timestamp NOT NULL DEFAULT current_timestamp
+);
+
 ALTER TABLE employee 
 	ADD FOREIGN KEY (id_office) REFERENCES office(id_office);
 
